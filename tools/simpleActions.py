@@ -17,11 +17,11 @@ length = 2340
 width = 1080
 
 class Actions:
-    def tap(x, y):
+    def tap(x, y, pause_s=0.7):
         subprocess.run(
             ["adb", "-s", DEVICE_ID, "shell", "input", "tap", str(x), str(y)]
         )
-        time.sleep(0.7)
+        time.sleep(pause_s)
 
 
     def swipe(x1, y1, x2, y2, duration_ms=600):
@@ -34,11 +34,21 @@ class Actions:
         time.sleep(0.9)
 
 
-    def drag(x1, y1, x2, y2, duration_ms=1000):
+    def pinch_zoom_out(cx, cy, spread=300, duration=500):
         """
-        not implemented yet
+        multi touch feature to zoom the screen out
         """
-        return 0
+        x1_start, y1_start = cx - 50, cy
+        x1_end, y1_end = cx - spread, cy
+        
+        x2_start, y2_start = cx + 50, cy
+        x2_end, y2_end = cx + spread, cy
+        
+        subprocess.run([
+            "adb", "-s", DEVICE_ID, "shell",
+            f"input touchscreen swipe {x1_start} {y1_start} {x1_end} {y1_end} {duration} &"
+            f"input touchscreen swipe {x2_start} {y2_start} {x2_end} {y2_end} {duration}"
+        ])
 
 
     def screenshot():

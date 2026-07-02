@@ -36,20 +36,34 @@ def find_base():
             Actions.tap(2199, 1269) # Next
             time.sleep(1)
         else: 
-            print("Base Found. Now start making attack strat")
+            print("Base Found")
             break
         
         
 
-def edragRageStrategy():
+def edragRageStrategy(dragons=10, armyIcons = 6):
 
     # CV map the base with red-border outline
+    
 
-    # deploy edrags
+    start = 300
+    inc = 200
+
+    # select edrags
+    for i in range(armyIcons):
+        Actions.tap(start, 1400)
+        # deploy edrags
+        for i in range(dragons):
+            Actions.tap(300, 700, pause_s=0.2)
+        
+        start = start + inc
+        
+    
     # deploy heros
     # deploy spells
-
-    # conclude attack, repeat
+    time.sleep(182)
+    # conclude attack
+    Actions.tap(1170, 1300)
 
     return 0
 
