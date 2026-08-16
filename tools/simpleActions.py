@@ -6,21 +6,39 @@ import cv2
 import datetime
 import pytesseract
 from PIL import Image
+from pathlib import Path
 
 # Tab S8
 DEVICE_ID = "R52T501DACZ"
-PROJECT_FOLDER = "/home/braedon/Projects/clashbot/screenshots"
-ICONS_FOLDER = "/home/braedon/Projects/clashbot/icons"
 
 # Samsung S23 - 1080x2340
-length = 2340
-width = 1080
+# length = 2340
+# width = 1080
+
+# Galaxy Tab S8 - 2560x1600
+length = 2560
+width = 1600
+
+BASE_DIR = Path('simpleActions.py').resolve().parent.parent
+SCREENSHOTS_FOLDER = BASE_DIR / "screenshots"
+ICONS_FOLDER = BASE_DIR / "icons"
 
 class Actions:
+    
+    def __init__(self):
+        pass
+
     def tap(x, y, pause_s=0.7):
-        subprocess.run(
-            ["adb", "-s", DEVICE_ID, "shell", "input", "tap", str(x), str(y)]
-        )
+        """
+        TODO: Make pause variable default to randomized lengths within a range.
+              So to run this frequently without getting detected as a bot. 
+        """
+        try:
+            subprocess.run(
+                ["adb", "-s", DEVICE_ID, "shell", "input", "tap", str(x), str(y)]
+            )
+        except Exception as e:
+            print(e)
         time.sleep(pause_s)
 
 
@@ -54,13 +72,17 @@ class Actions:
     def screenshot():
         """
         screen = Actions.screenshot()
+        Returns .png image
         """
-        result = subprocess.run(
+        try: 
+            result = subprocess.run(
             ["adb", "-s", DEVICE_ID, "exec-out", "screencap", "-p"],
-            capture_output=True
-        )
-        img_array = np.frombuffer(result.stdout, dtype=np.uint8)
-        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            capture_output=True)
+            img_array = np.frombuffer(result.stdout, dtype=np.uint8)
+            img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)  
+        except Exception as e:
+            print(e)
+
         return img
 
 
@@ -77,7 +99,7 @@ class Actions:
             filename = f"screen_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
         
         if save_path: save_path = save_path
-        else: save_path = os.path.join(PROJECT_FOLDER, filename)
+        else: save_path = os.path.join(SCREENSHOTS_FOLDER, filename)
         print(save_path)
 
         if image is None:
@@ -98,6 +120,11 @@ class Actions:
         """
         Finds the input icon and taps it. returnCords provides the x and y cords and
         doesn't tap. 
+
+        *This method isn't consistant at returning cords so I often rely on 
+        trial and error to produce static cords, rather than dynamic ones. 
+
+        - Maybe I'm not the best with OpenCV or this approach needs to be changed
         """
         # load both images
         screen = screenshot

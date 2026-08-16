@@ -1,20 +1,18 @@
-from clashbot.tools.simpleActions import Actions
-from clashbot.attacking.edragRageAttack import begin_attack_sequence, find_base, edragRageStrategy
-import cv2
+from tools.simpleActions import Actions
+from attacking.edragRageAttack import edragRageAttack
 
 # Samsung S23 - 1080x2340
-length = 2340
-width = 1080
+# length = 2340
+# width = 1080
+
+# Galaxy Tab S8 - 2560x1600
+length = 2560
+width = 1600
 
 def main():
-   
-    x = 5
-    for i in range(x):
-        begin_attack_sequence()
-        find_base()
-        edragRageStrategy()
 
+    Actions.findIcon()
     return 0
-
+    
 
 main()
